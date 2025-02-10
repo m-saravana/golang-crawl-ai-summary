@@ -67,8 +67,6 @@ Summary:
    - The author found it essential to implement a more robust evaluation pipeline using measurable metrics for their RAG app.
    - They encountered challenges with inconsistent metrics, high costs, and long evaluation times when using Ragas.
    - Despite these challenges, the author remains optimistic about refining the process and is curious about other methods used for evaluating systems.
-   
-```
 
 ## Contributing
 Contributions are welcome! Please feel free to submit a Pull Request.
