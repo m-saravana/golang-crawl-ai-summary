@@ -47,7 +47,7 @@ go run cmd/crawler/main.go -url <starting-url> [-config <path-to-config>] [-verb
 go run cmd/crawler/main.go -url <https://saravananm.netlify.app/blog/rag_evaluation/> -config config.json -verbose
 ```
 
-## Output Summary Format (Configurable using Prompt Template):
+## Output Summary Format (Changeable using Prompt Template): Summary for the above blog in the example usage
 Summary:
 1. Key Points:
    - The author created an evaluation pipeline for their RAG app using Ragas, a tool for evaluating Language Models (LLMs).
@@ -75,9 +75,9 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Future Improvements
-- [] Add Notes taking feature
-- [] Evaluation pipeline for summarization quality. ROUGE or BLEU
-- [] Add more model support for better summarization (Gemini, etc)
-- [] Move away from summarization to RAG , to chat with the context
-- [] Add a web UI to interact with the crawler and summarizer
+- [ ] Add Notes taking feature
+- [ ] Evaluation pipeline for summarization quality. ROUGE or BLEU
+- [ ] Add more model support for better summarization (Gemini, etc)
+- [ ] Move away from summarization to RAG , to chat with the context
+- [ ] Add a web UI to interact with the crawler and summarizer
 
