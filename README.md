@@ -1,6 +1,11 @@
 # Web Crawler with Summarization
 
-A web crawler written in Go that crawls web pages and generates summaries using the Ollama AI model. The crawler is designed to be configurable, and using locally running ollama server and Mistral model for summarization. Used Playwright for browser automation to interact with web pages and extract content.
+A simple web crawler written in Go that crawls web pages and generates summaries using the Ollama AI models running locally or remotely. The crawler is designed to be configurable, and using locally/remotely running ollama server. Used Playwright for browser automation to interact with web pages and extract content.
+
+I've written this crawler for the following reasons:
+1. summarising crawler to summarise the medium articles and take notes to reduce the manual note taking and reference it for future use 
+2. reinforcing my golang understanding. 
+3. also i am planning a RAG app idea that can answer questions based on the public api crawling results(like weather api's, flights api's, news api's) in which i can ask questions like "what's the weather like in chennai?", "what's the latest news in india", "what's the latest/cheapest flight schedules for mumbai to delhi",etc.
 
 ## Features
 
@@ -32,16 +37,18 @@ go mod tidy
 ## Usage
 ```bash
 go run cmd/crawler/main.go -url <starting-url> [-config <path-to-config>] [-verbose]
-go run cmd/crawler/main.go -url <https://saravananm.netlify.app/blog/rag_evaluation/> -config config.json
 ```
 -url: The starting URL to crawl (required)
 -config: Path to configuration file (optional)
 -verbose: Enable verbose logging (optional)
 
-## Output:
+## Example Usage
+```bash
+go run cmd/crawler/main.go -url <https://saravananm.netlify.app/blog/rag_evaluation/> -config config.json -verbose
 ```
-Summary:
 
+## Output Summary Format (Configurable using Prompt Template):
+Summary:
 1. Key Points:
    - The author created an evaluation pipeline for their RAG app using Ragas, a tool for evaluating Language Models (LLMs).
    - They realized the importance of implementing production metrics, such as context recall, precision, and model adherence to instructions.
@@ -67,6 +74,12 @@ Summary:
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## Future Improvements
+- [] Add Notes taking feature
+- [] Evaluation pipeline for summarization quality. ROUGE or BLEU
+- [] Add more model support for better summarization (Gemini, etc)
+- [] Move away from summarization to RAG , to chat with the context
+- [] Add a web UI to interact with the crawler and summarizer
 

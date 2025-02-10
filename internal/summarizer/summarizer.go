@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"strings"
-	"sync"
 	"time"
 )
 
@@ -20,54 +19,9 @@ type ContentUnderstanding struct {
 
 type Summarizer interface {
 	Summarize(text string) (string, error)
-	SimplifyContent(text string) (*ContentUnderstanding, error)
-	AddNote(url string, note string) error
-	GetUnderstanding(url string) (*ContentUnderstanding, error)
-}
-
-type BaseSummarizer struct {
-	understanding map[string]*ContentUnderstanding
-	mu            sync.RWMutex
-}
-
-func NewBaseSummarizer() BaseSummarizer {
-	return BaseSummarizer{
-		understanding: make(map[string]*ContentUnderstanding),
-	}
-}
-
-func (b *BaseSummarizer) AddNote(url string, note string) error {
-	b.mu.Lock()
-	defer b.mu.Unlock()
-
-	understanding, exists := b.understanding[url]
-	if !exists {
-		understanding = &ContentUnderstanding{
-			URL: url,
-		}
-	}
-
-	understanding.Notes = note
-	understanding.LastModified = time.Now()
-	b.understanding[url] = understanding
-
-	return nil
-}
-
-func (b *BaseSummarizer) GetUnderstanding(url string) (*ContentUnderstanding, error) {
-	b.mu.RLock()
-	defer b.mu.RUnlock()
-
-	understanding, exists := b.understanding[url]
-	if !exists {
-		return nil, fmt.Errorf("no understanding found for URL: %s", url)
-	}
-
-	return understanding, nil
 }
 
 type OllamaSummarizer struct {
-	BaseSummarizer
 	baseURL string
 	model   string
 }
@@ -77,9 +31,8 @@ func NewOllamaSummarizer(baseURL, model string) *OllamaSummarizer {
 		model = "mistral" // default model
 	}
 	return &OllamaSummarizer{
-		BaseSummarizer: NewBaseSummarizer(),
-		baseURL:        baseURL,
-		model:          model,
+		baseURL: baseURL,
+		model:   model,
 	}
 }
 
@@ -184,42 +137,4 @@ Remember to be concise and specific.`, text)
 	}
 
 	return summary, nil
-}
-
-// SimplifyContent generates a simplified explanation of the given text using Ollama
-func (o *OllamaSummarizer) SimplifyContent(text string) (*ContentUnderstanding, error) {
-	prompt := "Please explain the following content in simple terms that anyone can understand:\n\n%s"
-
-	reqBody := ollamaRequest{
-		Model:  o.model,
-		Prompt: fmt.Sprintf(prompt, text),
-		Stream: false,
-	}
-
-	jsonData, err := json.Marshal(reqBody)
-	if err != nil {
-		return nil, fmt.Errorf("failed to marshal request: %v", err)
-	}
-
-	resp, err := http.Post(fmt.Sprintf("%s/api/generate", o.baseURL), "application/json", bytes.NewBuffer(jsonData))
-	if err != nil {
-		return nil, fmt.Errorf("failed to make request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result ollamaResponse
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode response: %v", err)
-	}
-
-	if result.Error != "" {
-		return nil, fmt.Errorf("ollama error: %s", result.Error)
-	}
-
-	understanding := &ContentUnderstanding{
-		SimplifiedText: result.Response,
-		LastModified:   time.Now(),
-	}
-
-	return understanding, nil
 }
