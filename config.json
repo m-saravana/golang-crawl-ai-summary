@@ -1,0 +1,9 @@
+{
+    "maxDepth": 2,
+    "rateLimit": 1.0,
+    "maxWorkers": 5,
+    "allowedHosts": [],
+    "summarizerType": "ollama",
+    "ollamaBaseURL": "http://localhost:11434",
+    "ollamaModel": "mistral"
+}
